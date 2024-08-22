@@ -10,9 +10,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ICaptchaService, CaptchaService>();
 builder.Services.AddDistributedMemoryCache();
+ builder.Services.AddMemoryCache();
+
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // مدت زمان فعال بودن سشن
+    options.IdleTimeout = TimeSpan.FromMinutes(5); // مدت زمان فعال بودن سشن
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });

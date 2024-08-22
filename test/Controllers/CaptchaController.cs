@@ -1,48 +1,82 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using System;
+using System.Threading.Tasks;
 using test.services;
 
-namespace test.Controllers;
-
-[ApiController]
+namespace test.Controllers
+{
+    [ApiController]
     [Route("api/[controller]")]
     public class CaptchaController : ControllerBase
     {
         private readonly ICaptchaService _captchaService;
         private readonly Random _random;
+        private readonly IMemoryCache _cache;
 
-        public CaptchaController(ICaptchaService captchaService)
+        public CaptchaController(ICaptchaService captchaService, IMemoryCache cache)
         {
             _captchaService = captchaService;
+            _cache = cache;
             _random = new Random();
         }
 
         [HttpGet("generate")]
         public async Task<IActionResult> GenerateCaptcha()
         {
-            var captchaText = GenerateRandomCaptchaText();
-            var captchaImage = await _captchaService.GenerateCaptchaAsync(captchaText);
+            try
+            {
+                var captchaText = GenerateRandomCaptchaText();
+                var captchaId = Guid.NewGuid().ToString();
 
-            // ذخیره‌سازی کپچا برای استفاده در اعتبارسنجی
-            // این روش باید جایگزین با روش مناسب ذخیره‌سازی مانند cache یا session شود
+                // ذخیره در کش به مدت 10 دقیقه
+                _cache.Set(captchaId, captchaText, TimeSpan.FromMinutes(4));
 
-            // برای مثال، با استفاده از Session (شما باید session را در برنامه فعال کنید)
-            HttpContext.Session.SetString("CaptchaText", captchaText);
+                var captchaImage = await _captchaService.GenerateCaptchaAsync(captchaText);
+                if (captchaImage == null || captchaImage.Length == 0)
+                {
+                    return StatusCode(500, "Failed to generate CAPTCHA image.");
+                }
 
-            return File(captchaImage, "image/png");
+                var base64Image = Convert.ToBase64String(captchaImage);
+
+                return Ok(new
+                {
+                    captchaId = captchaId,
+                    captchaImage = $"data:image/png;base64,{base64Image}"
+                });
+            }
+            catch (Exception ex)
+            {
+                // ثبت خطا و بازگشت پاسخ خطا
+                // LogException(ex); // این متد باید برای ثبت خطا پیاده‌سازی شود
+                return StatusCode(500, "An error occurred while generating CAPTCHA.");
+            }
         }
 
         [HttpPost("validate")]
         public IActionResult ValidateCaptcha([FromBody] CaptchaValidationRequest request)
         {
-            var captchaText = HttpContext.Session.GetString("CaptchaText");
-            
-            if (captchaText == null)
+            try
             {
-                return BadRequest("Captcha not found.");
+                if (_cache.TryGetValue(request.CaptchaId, out string storedCaptchaText))
+                {
+                    bool isValid = _captchaService.ValidateCaptcha(storedCaptchaText, request.UserInput);
+                    return Ok(new { IsValid = isValid });
+                }
+                else
+                {
+                    // لاگ کردن شناسه کپچا و وضعیت کش
+                    Console.WriteLine($"Captcha not found or expired. CaptchaId: {request.CaptchaId}");
+                    return BadRequest("Captcha not found or expired.");
+                }
             }
-
-            bool isValid = _captchaService.ValidateCaptcha(captchaText, request.UserInput);
-            return Ok(new { IsValid = isValid });
+            catch (Exception ex)
+            {
+                // ثبت خطا و بازگشت پاسخ خطا
+                // LogException(ex); // این متد باید برای ثبت خطا پیاده‌سازی شود
+                return StatusCode(500, "An error occurred while validating CAPTCHA.");
+            }
         }
 
         private string GenerateRandomCaptchaText()
@@ -60,4 +94,6 @@ namespace test.Controllers;
     public class CaptchaValidationRequest
     {
         public string UserInput { get; set; }
+        public string CaptchaId { get; set; }
     }
+}
