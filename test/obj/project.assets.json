@@ -1769,19 +1769,19 @@
     ]
   },
   "packageFolders": {
-    "/home/aliz/.nuget/packages/": {}
+    "/home/alireza/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/aliz/RiderProjects/test/test/test.csproj",
+      "projectUniqueName": "/home/alireza/Project/Captcha-With-.Net/test/test.csproj",
       "projectName": "test",
-      "projectPath": "/home/aliz/RiderProjects/test/test/test.csproj",
-      "packagesPath": "/home/aliz/.nuget/packages/",
-      "outputPath": "/home/aliz/RiderProjects/test/test/obj/",
+      "projectPath": "/home/alireza/Project/Captcha-With-.Net/test/test.csproj",
+      "packagesPath": "/home/alireza/.nuget/packages/",
+      "outputPath": "/home/alireza/Project/Captcha-With-.Net/test/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/aliz/.nuget/NuGet/NuGet.Config"
+        "/home/alireza/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -1845,6 +1845,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.5, 8.0.5]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -1853,7 +1859,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/home/aliz/.dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.105/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
