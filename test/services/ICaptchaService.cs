@@ -25,7 +25,7 @@ public class CaptchaService : ICaptchaService
     public async Task<byte[]> GenerateCaptchaAsync(string captchaText)
     {
 
-        using (var image = new Image<Rgba32>(150, 100))
+        using (var image = new Image<Rgba32>(150, 67))
         {
             var filePath = Path.Combine(_backupFolder, "ArizonaBold.ttf");
 
