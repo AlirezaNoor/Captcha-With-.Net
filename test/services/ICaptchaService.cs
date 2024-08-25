@@ -21,27 +21,29 @@ public interface ICaptchaService
 public class CaptchaService : ICaptchaService
 {
     private readonly Random _random = new Random();
-    private readonly string _backupFolder = Path.Combine(Directory.GetCurrentDirectory(), "font");
+    private readonly Font _font;
+    public CaptchaService()
+    {
+        // بارگذاری فونت از منابع درون‌ساخته
+        var assembly = typeof(CaptchaService).Assembly;
+        using (var stream = assembly.GetManifestResourceStream("test.wwwroot.fonts.ArizonaBold.ttf"))
+        {
+            if (stream == null)
+            {
+                throw new FileNotFoundException("Font resource not found.");
+            }
+            var collection = new FontCollection();
+            var family = collection.Add(stream);
+            _font = family.CreateFont(38, FontStyle.Italic);
+        }
+    }
     public async Task<byte[]> GenerateCaptchaAsync(string captchaText)
     {
-
         using (var image = new Image<Rgba32>(150, 67))
         {
-            var filePath = Path.Combine(_backupFolder, "ArizonaBold.ttf");
+            image.Mutate(x => x.Fill(Color.White));
+            image.Mutate(x => x.DrawText(captchaText, _font, Color.Black, new PointF(13, 19)));
 
-            // بررسی وجود فایل
-            if (!System.IO.File.Exists(filePath)) return new byte[2];
-
-            // خواندن محتوای فایل
-            var fileBytes = System.IO.File.ReadAllBytes(filePath);
-            FontCollection collection = new();
-            FontFamily family = collection.Add(filePath);
-            Font font = family.CreateFont(38, FontStyle.Italic);
-            // پس‌زمینه سفید و متن مشکی را اضافه می‌کنیم
-            image.Mutate(x => x.Fill(Color.White)); // تنظیم پس‌زمینه سفید
-            image.Mutate(x => x.DrawText(captchaText, font, Color.Black, new PointF(13, 19)));
-
-            // اضافه کردن نویز
             AddNoise(image);
             AddLines(image);
 

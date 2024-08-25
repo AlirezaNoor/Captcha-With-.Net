@@ -11,14 +11,16 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ICaptchaService, CaptchaService>();
 builder.Services.AddDistributedMemoryCache();
  builder.Services.AddMemoryCache();
-
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(5); // مدت زمان فعال بودن سشن
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
-
+ builder.Services.AddCors(options =>
+ {
+     options.AddPolicy("AllowAll", builder =>
+     {
+         builder
+             .AllowAnyOrigin()    // Allow requests from any origin
+             .AllowAnyMethod()    // Allow any HTTP method (GET, POST, etc.)
+             .AllowAnyHeader();   // Allow any headers
+     });
+ });
 
 var app = builder.Build();
 
@@ -30,9 +32,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseStaticFiles(); 
 app.UseAuthorization();
-app.UseSession();
-app.MapControllers();
-
+ app.MapControllers();
+ app.UseCors("AllowAll");
 app.Run();

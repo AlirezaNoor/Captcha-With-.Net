@@ -1,11 +1,39 @@
 {
   "Version": 1,
-  "Hash": "Tn4U0MxeqheqDtM8AWopZrpbgq+vvHznGcbO+fGCIeM=",
+  "Hash": "POmpQA1jX8v1B347k754pdcjo1mH6e/htCPolT27KUY=",
   "Source": "test",
   "BasePath": "_content/test",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "test/wwwroot",
+      "Source": "test",
+      "ContentRoot": "/home/alireza/Project/Captcha-With-.Net/test/wwwroot/",
+      "BasePath": "_content/test",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "/home/alireza/Project/Captcha-With-.Net/test/wwwroot/fonts/ArizonaBold.ttf",
+      "SourceId": "test",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/alireza/Project/Captcha-With-.Net/test/wwwroot/",
+      "BasePath": "_content/test",
+      "RelativePath": "fonts/ArizonaBold.ttf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/fonts/ArizonaBold.ttf"
+    }
+  ]
 }
