@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "POmpQA1jX8v1B347k754pdcjo1mH6e/htCPolT27KUY=",
+  "Hash": "248TUmTGWIBIAL1fDErO479lV3OuYTC9i7GH78EMCSU=",
   "Source": "test",
   "BasePath": "_content/test",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "test/wwwroot",
       "Source": "test",
-      "ContentRoot": "/home/alireza/Project/Captcha-With-.Net/test/wwwroot/",
+      "ContentRoot": "/home/aliz/RiderProjects/test/test/wwwroot/",
       "BasePath": "_content/test",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "/home/alireza/Project/Captcha-With-.Net/test/wwwroot/fonts/ArizonaBold.ttf",
+      "Identity": "/home/aliz/RiderProjects/test/test/wwwroot/fonts/ArizonaBold.ttf",
       "SourceId": "test",
       "SourceType": "Discovered",
-      "ContentRoot": "/home/alireza/Project/Captcha-With-.Net/test/wwwroot/",
+      "ContentRoot": "/home/aliz/RiderProjects/test/test/wwwroot/",
       "BasePath": "_content/test",
       "RelativePath": "fonts/ArizonaBold.ttf",
       "AssetKind": "All",

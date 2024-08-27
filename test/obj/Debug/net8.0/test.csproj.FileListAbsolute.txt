@@ -80,3 +80,5 @@
 /home/alireza/Project/Captcha-With-.Net/test/obj/Debug/net8.0/test.genruntimeconfig.cache
 /home/alireza/Project/Captcha-With-.Net/test/obj/Debug/net8.0/ref/test.dll
 /home/alireza/Project/Captcha-With-.Net/test/bin/Debug/net8.0/test.staticwebassets.runtime.json
+/home/aliz/RiderProjects/test/test/bin/Debug/net8.0/test.staticwebassets.runtime.json
+/home/aliz/RiderProjects/test/test/obj/Debug/net8.0/test.sourcelink.json
