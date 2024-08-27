@@ -10,30 +10,31 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ICaptchaService, CaptchaService>();
 builder.Services.AddDistributedMemoryCache();
- builder.Services.AddMemoryCache();
- builder.Services.AddCors(options =>
- {
-     options.AddPolicy("AllowAll", builder =>
-     {
-         builder
-             .AllowAnyOrigin()    // Allow requests from any origin
-             .AllowAnyMethod()    // Allow any HTTP method (GET, POST, etc.)
-             .AllowAnyHeader();   // Allow any headers
-     });
- });
+builder.Services.AddMemoryCache();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder
+            .AllowAnyOrigin()    // Allow requests from any origin
+            .AllowAnyMethod()    // Allow any HTTP method (GET, POST, etc.)
+            .AllowAnyHeader();   // Allow any headers
+    });
+});
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
+// if (app.Environment.IsDevelopment())
+// {
+//     app.UseSwagger();
+//     app.UseSwaggerUI();
+// }
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseStaticFiles(); 
 app.UseAuthorization();
- app.MapControllers();
- app.UseCors("AllowAll");
+app.MapControllers();
+app.UseCors("AllowAll");
 app.Run();
