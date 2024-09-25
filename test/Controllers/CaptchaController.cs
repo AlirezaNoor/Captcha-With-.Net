@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
+using StackExchange.Redis;
 using System;
 using System.Threading.Tasks;
 using test.services;
@@ -12,13 +12,13 @@ namespace test.Controllers
     {
         private readonly ICaptchaService _captchaService;
         private readonly Random _random;
-        private readonly IMemoryCache _cache;
+        private readonly IDatabase _redis;
 
-        public CaptchaController(ICaptchaService captchaService, IMemoryCache cache)
+        public CaptchaController(ICaptchaService captchaService, IConnectionMultiplexer redis)
         {
             _captchaService = captchaService;
-            _cache = cache;
             _random = new Random();
+            _redis = redis.GetDatabase();
         }
 
         [HttpGet("generate")]
@@ -29,8 +29,8 @@ namespace test.Controllers
                 var captchaText = GenerateRandomCaptchaText();
                 var captchaId = Guid.NewGuid().ToString();
 
-                // ذخیره در کش به مدت 10 دقیقه
-                _cache.Set(captchaId, captchaText, TimeSpan.FromMinutes(4));
+                // ذخیره در ردیس به مدت 4 دقیقه
+                await _redis.StringSetAsync(captchaId, captchaText, TimeSpan.FromMinutes(4));
 
                 var captchaImage = await _captchaService.GenerateCaptchaAsync(captchaText);
                 if (captchaImage == null || captchaImage.Length == 0)
@@ -49,24 +49,26 @@ namespace test.Controllers
             catch (Exception ex)
             {
                 // ثبت خطا و بازگشت پاسخ خطا
-                // LogException(ex); // این متد باید برای ثبت خطا پیاده‌سازی شود
                 return StatusCode(500, "An error occurred while generating CAPTCHA.");
             }
         }
 
         [HttpPost("validate")]
-        public IActionResult ValidateCaptcha([FromBody] CaptchaValidationRequest request)
+        public async Task<IActionResult> ValidateCaptcha([FromBody] CaptchaValidationRequest request)
         {
             try
             {
-                if (_cache.TryGetValue(request.CaptchaId, out string storedCaptchaText))
+                // بازیابی متن کپچا از ردیس
+                var storedCaptchaText = await _redis.StringGetAsync(request.CaptchaId);
+
+                if (!storedCaptchaText.IsNullOrEmpty)
                 {
                     bool isValid = _captchaService.ValidateCaptcha(storedCaptchaText, request.UserInput);
                     return Ok(new { IsValid = isValid });
                 }
                 else
                 {
-                    // لاگ کردن شناسه کپچا و وضعیت کش
+                    // لاگ کردن شناسه کپچا و وضعیت ردیس
                     Console.WriteLine($"Captcha not found or expired. CaptchaId: {request.CaptchaId}");
                     return BadRequest("Captcha not found or expired.");
                 }
@@ -74,7 +76,6 @@ namespace test.Controllers
             catch (Exception ex)
             {
                 // ثبت خطا و بازگشت پاسخ خطا
-                // LogException(ex); // این متد باید برای ثبت خطا پیاده‌سازی شود
                 return StatusCode(500, "An error occurred while validating CAPTCHA.");
             }
         }

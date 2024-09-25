@@ -1,3 +1,4 @@
+using StackExchange.Redis;
 using test.services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ICaptchaService, CaptchaService>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddMemoryCache();
+var redisConnectionString = builder.Configuration.GetSection("Redis:ConnectionString").Value;
+
+// اضافه کردن اتصال Redis به DI container
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
